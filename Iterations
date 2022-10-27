@@ -1,8 +1,11 @@
 #include "helpers.h"
 #include <math.h>
 
+
+
 typedef unsigned char BYTE;
 BYTE cap(double a);
+
 
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
@@ -10,9 +13,9 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
         {
             for (int j = 0; j < width; j++)
             {
-            // assign the indexed location
+            // assignt the indexed location
             RGBTRIPLE rgbt = image[i][j];
-            // take average of each color value at coordinate [i][j]
+            // take average of each color value located at this coordinate [i][j]
             float average = (rgbt.rgbtBlue + rgbt.rgbtGreen + rgbt.rgbtRed)/3;
             rgbt.rgbtBlue = average;
             rgbt.rgbtGreen = average;
@@ -29,19 +32,13 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            RGBTRIPLE rgbt;
-            rgbt = image[i][j];
-            rgbt.rgbtRed = cap(393 * rgbt.rgbtRed + .769 * rgbt.rgbtGreen + .189 * rgbt.rgbtBlue);
-            rgbt.rgbtGreen = cap(.349 * rgbt.rgbtRed + .686 * rgbt.rgbtGreen + .168 * rgbt.rgbtBlue);
-            rgbt.rgbtBlue = cap(.272 * rgbt.rgbtRed + .534 * rgbt.rgbtGreen + .131 * rgbt.rgbtBlue);
-            image[i][j] = rgbt;
-
+            image[i][j].rgbtRed = cap(393 * image[i][j].rgbtRed + .769 * image[i][j].rgbtGreen + .189 * image[i][j].rgbtBlue);
+            image[i][j].rgbtGreen = cap(.349 * image[i][j].rgbtRed + .686 * image[i][j].rgbtGreen + .168 * image[i][j].rgbtBlue);
+            image[i][j].rgbtBlue = cap(.272 * image[i][j].rgbtRed + .534 * image[i][j].rgbtGreen + .131 * image[i][j].rgbtBlue);
         }
     }
     return;
 }
-
-
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
@@ -54,8 +51,6 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 
-
-// FUNCTION to convert integers to acceptable BYTE integer values, 0 - 255 inclusive.
 
 BYTE cap(double a)
 {
