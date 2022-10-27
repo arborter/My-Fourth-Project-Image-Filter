@@ -1,0 +1,74 @@
+#include "helpers.h"
+#include <math.h>
+
+typedef unsigned char BYTE;
+BYTE cap(double a);
+
+void grayscale(int height, int width, RGBTRIPLE image[height][width])
+{
+    for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+            // assign the indexed location
+            RGBTRIPLE rgbt = image[i][j];
+            // take average of each color value at coordinate [i][j]
+            float average = (rgbt.rgbtBlue + rgbt.rgbtGreen + rgbt.rgbtRed)/3;
+            rgbt.rgbtBlue = average;
+            rgbt.rgbtGreen = average;
+            rgbt.rgbtRed =  average;
+            image[i][j] = rgbt;
+            }
+        }
+        return;
+}
+// Convert image to sepia
+void sepia(int height, int width, RGBTRIPLE image[height][width])
+{
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            RGBTRIPLE rgbt;
+            rgbt = image[i][j];
+            rgbt.rgbtRed = cap(393 * rgbt.rgbtRed + .769 * rgbt.rgbtGreen + .189 * rgbt.rgbtBlue);
+            rgbt.rgbtGreen = cap(.349 * rgbt.rgbtRed + .686 * rgbt.rgbtGreen + .168 * rgbt.rgbtBlue);
+            rgbt.rgbtBlue = cap(.272 * rgbt.rgbtRed + .534 * rgbt.rgbtGreen + .131 * rgbt.rgbtBlue);
+            image[i][j] = rgbt;
+
+        }
+    }
+    return;
+}
+
+
+// Reflect image horizontally
+void reflect(int height, int width, RGBTRIPLE image[height][width])
+{
+    return;
+}
+
+// Blur image
+void blur(int height, int width, RGBTRIPLE image[height][width])
+{
+    return;
+}
+
+
+// FUNCTION to convert integers to acceptable BYTE integer values, 0 - 255 inclusive.
+
+BYTE cap(double a)
+{
+    if (a > 255)
+    {
+        return 255;
+    }
+    else if(a < 0)
+    {
+        return 0;
+    }
+    else
+    {
+        return round(a);
+    }
+}
