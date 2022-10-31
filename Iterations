@@ -1,10 +1,24 @@
 #include "helpers.h"
 #include <math.h>
 
-
-
+// To cap a value at 0 and 255 inclusive we assign an output for a function as a hexadecimal number which takes
+// the float value of a claculation on pixels and then adjusts it to the acceptable memory format to alter original image (8 bits)
 typedef unsigned char BYTE;
 BYTE cap(double a);
+
+//Prototype of cheat sheet image function
+//BYTE image_reference(RGBTRIPLE image);
+// Implementation of a code
+//BYTE image_reference(RGBTRIPLE image[height][width])
+//{
+//    RGBTRIPLE image_cheat_sheet;
+//    image_cheat_sheet = image;
+//
+//}
+
+
+// This is a function to get through our base case.
+BYTE base_case_check(RGBTRIPLE a);
 
 
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
@@ -35,6 +49,8 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
             image[i][j].rgbtRed = cap(393 * image[i][j].rgbtRed + .769 * image[i][j].rgbtGreen + .189 * image[i][j].rgbtBlue);
             image[i][j].rgbtGreen = cap(.349 * image[i][j].rgbtRed + .686 * image[i][j].rgbtGreen + .168 * image[i][j].rgbtBlue);
             image[i][j].rgbtBlue = cap(.272 * image[i][j].rgbtRed + .534 * image[i][j].rgbtGreen + .131 * image[i][j].rgbtBlue);
+            // command: ./filter -s images/yard.bmp out.bmp
+            // command: ./filter -s images/stadium.bmp out.bmp
         }
     }
     return;
@@ -45,12 +61,40 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 
+
+
+
+
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
+    RGBTRIPLE reference = image[height][width];
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            RGBTRIPLE place = image[i][j];
+
+
+
+// LEFT TO RIGHT
+            image[i][j].rgbtRed = (place[i][j].rgbtRed + reference[i][j - 1].rgbtRed + reference[i][j + 1].rgbtRed)/3;
+            image[i][j].rgbtGreen = (place[i][j].rgbtGreen + reference[i][j - 1].rgbtGreen + reference[i][j + 1].rgbtGreen)/3;
+            image[i][j].rgbtBlue = (place[i][j].rgbtBlue + reference[i][j - 1].rgbtBlue + reference[i][j + 1].rgbtBlue)/3;
+// DOWN
+            image[i][j].rgbtRed = (place[i - 1][j].rgbtRed + reference[i - 1][j + 1].rgbtRed + reference[i - 1][j - 1].rgbtRed)/3;
+            image[i][j].rgbtGreen = (place[i - 1][j].rgbtGreen + reference[i - 1][j + 1].rgbtGreen + reference[i - 1][j - 1].rgbtGreen)/3;
+            image[i][j].rgbtBlue = (place[i - 1][j].rgbtBlue + reference[i - 1][j + 1].rgbtBlue + reference[i - 1][j - 1].rgbtBlue)/3;
+// UP
+            image[i][j].rgbtRed = (place[i + 1][j].rgbtRed + reference[i + 1][j + 1].rgbtRed + reference[i + 1][j - 1].rgbtRed)/3;
+            image[i][j].rgbtGreen = (place[i + 1][j].rgbtGreen + reference[i + 1][j + 1].rgbtGreen + reference[i + 1][j - 1].rgbtGreen)/3;
+            image[i][j].rgbtBlue = (place[i + 1][j].rgbtBlue + reference[i + 1][j + 1].rgbtBlue + reference[i + 1][j - 1].rgbtBlue)/3;
+            // command: ./filter -b images/yard.bmp out.bmp
+            // command: ./filter -b images/stadium.bmp out.bmp
+        }
+    }
     return;
 }
-
 
 BYTE cap(double a)
 {
@@ -66,4 +110,13 @@ BYTE cap(double a)
     {
         return round(a);
     }
+}
+
+BYTE base_case_check(RGBTRIPLE a)
+{
+    if (a[height] == 0 && a[width] == 0)
+    {
+        return a;
+    }
+
 }
