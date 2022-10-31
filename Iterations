@@ -6,21 +6,6 @@
 typedef unsigned char BYTE;
 BYTE cap(double a);
 
-//Prototype of cheat sheet image function
-//BYTE image_reference(RGBTRIPLE image);
-// Implementation of a code
-//BYTE image_reference(RGBTRIPLE image[height][width])
-//{
-//    RGBTRIPLE image_cheat_sheet;
-//    image_cheat_sheet = image;
-//
-//}
-
-
-// This is a function to get through our base case.
-BYTE base_case_check(RGBTRIPLE a);
-
-
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
     for (int i = 0; i < height; i++)
@@ -61,34 +46,96 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 
-
-
-
-
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    RGBTRIPLE reference = image[height][width];
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
             RGBTRIPLE place = image[i][j];
+            if (j == 0)
+            {
+                if (i == 0)
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i][j + 1].rgbtRed + image[i - 1][j].rgbtRed + image[i - 1][j + 1].rgbtRed)/4;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i][j + 1].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j + 1].rgbtGreen)/4;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i][j + 1].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j + 1].rgbtBlue)/4;
 
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
 
+                }
+                else if(i > 1)
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i + 1][j].rgbtRed + image[i][j + 1].rgbtRed + image[i - 1][j + 1].rgbtRed + image[i + 1][j + 1].rgbtRed)/6;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j + 1].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i + 1][j + 1].rgbtGreen)/6;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j + 1].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i + 1][j + 1].rgbtBlue)/6;
 
-// LEFT TO RIGHT
-            image[i][j].rgbtRed = (place[i][j].rgbtRed + reference[i][j - 1].rgbtRed + reference[i][j + 1].rgbtRed)/3;
-            image[i][j].rgbtGreen = (place[i][j].rgbtGreen + reference[i][j - 1].rgbtGreen + reference[i][j + 1].rgbtGreen)/3;
-            image[i][j].rgbtBlue = (place[i][j].rgbtBlue + reference[i][j - 1].rgbtBlue + reference[i][j + 1].rgbtBlue)/3;
-// DOWN
-            image[i][j].rgbtRed = (place[i - 1][j].rgbtRed + reference[i - 1][j + 1].rgbtRed + reference[i - 1][j - 1].rgbtRed)/3;
-            image[i][j].rgbtGreen = (place[i - 1][j].rgbtGreen + reference[i - 1][j + 1].rgbtGreen + reference[i - 1][j - 1].rgbtGreen)/3;
-            image[i][j].rgbtBlue = (place[i - 1][j].rgbtBlue + reference[i - 1][j + 1].rgbtBlue + reference[i - 1][j - 1].rgbtBlue)/3;
-// UP
-            image[i][j].rgbtRed = (place[i + 1][j].rgbtRed + reference[i + 1][j + 1].rgbtRed + reference[i + 1][j - 1].rgbtRed)/3;
-            image[i][j].rgbtGreen = (place[i + 1][j].rgbtGreen + reference[i + 1][j + 1].rgbtGreen + reference[i + 1][j - 1].rgbtGreen)/3;
-            image[i][j].rgbtBlue = (place[i + 1][j].rgbtBlue + reference[i + 1][j + 1].rgbtBlue + reference[i + 1][j - 1].rgbtBlue)/3;
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+
+                }
+                else // i = height
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i - 1][j + 1].rgbtRed + image[i][j + 1].rgbtRed)/4;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i][j + 1].rgbtGreen)/4;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i][j + 1].rgbtBlue)/4;
+
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+                }
+
+            }
+            else if(j == width)
+            {
+                if(i == 0)
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i - 1][j - 1].rgbtRed + image[i][j - 1].rgbtRed)/4;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i][j - 1].rgbtGreen)/4;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i][j - 1].rgbtBlue)/4;
+
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+
+                }
+                else if(i > 1)
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i + 1][j].rgbtRed + image[i][j - 1].rgbtRed + image[i - 1][j - 1].rgbtRed + image[i + 1][j - 1].rgbtRed)/6;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j - 1].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i + 1][j - 1].rgbtGreen)/6;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j - 1].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i + 1][j - 1].rgbtBlue)/6;
+
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+                }
+                else // i = height
+                {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i - 1][j - 1].rgbtRed + image[i][j - 1].rgbtRed)/4;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i][j - 1].rgbtGreen)/4;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i][j - 1].rgbtBlue)/4;
+
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+
+                }
+            }
+            else // j = width - 1
+            {
+                    float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i + 1][j].rgbtRed + image[i][j - 1].rgbtRed + image[i - 1][j - 1].rgbtRed + image[i + 1][j - 1].rgbtRed + image[i - 1][j + 1].rgbtRed + image[i][j + 1].rgbtRed + image[i + 1][j + 1].rgbtRed)/9;
+                    float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j - 1].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i + 1][j - 1].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i][j + 1].rgbtGreen + image[i + 1][j + 1].rgbtGreen)/9;
+                    float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j - 1].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i + 1][j - 1].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i][j + 1].rgbtBlue + image[i + 1][j + 1].rgbtBlue)/9;
+
+                    image[i][j].rgbtRed = round(RedAvg);
+                    image[i][j].rgbtGreen = round(GreenAvg);
+                    image[i][j].rgbtBlue = round(BlueAvg);
+
+            }
             // command: ./filter -b images/yard.bmp out.bmp
             // command: ./filter -b images/stadium.bmp out.bmp
         }
@@ -110,13 +157,4 @@ BYTE cap(double a)
     {
         return round(a);
     }
-}
-
-BYTE base_case_check(RGBTRIPLE a)
-{
-    if (a[height] == 0 && a[width] == 0)
-    {
-        return a;
-    }
-
 }
