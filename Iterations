@@ -12,8 +12,8 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
         {
             for (int j = 0; j < width; j++)
             {
-            // assignt the indexed location
-            RGBTRIPLE rgbt = image[i][j];
+            RGBTRIPLE rgbt;
+            rgbt = image[i][j];
             // take average of each color value located at this coordinate [i][j]
             float average = (rgbt.rgbtBlue + rgbt.rgbtGreen + rgbt.rgbtRed)/3;
             rgbt.rgbtBlue = average;
@@ -41,19 +41,29 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 // Reflect image horizontally
+
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
+    for (int i = 0; i < height; i++)
+    {
+        for (int k = 0, j = width - 1; k < j; k++, j--)
+        {
+            RGBTRIPLE temp = image[i][k];
+            image[i][k] = image[i][j];
+            image[i][j] = temp;
+        }
+    }
     return;
 }
 
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
+    RGBTRIPLE temp[height][width];
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-            RGBTRIPLE place = image[i][j];
             if (j == 0)
             {
                 if (i == 0)
@@ -61,10 +71,12 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float RedAvg = (image[i][j].rgbtRed + image[i][j + 1].rgbtRed + image[i - 1][j].rgbtRed + image[i - 1][j + 1].rgbtRed)/4;
                     float GreenAvg = (image[i][j].rgbtGreen + image[i][j + 1].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j + 1].rgbtGreen)/4;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i][j + 1].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j + 1].rgbtBlue)/4;
-
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+                    //storing avg red value in temp red
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    //storing avg green value in temp green
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    //storing avg blue value in temp blue
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
 
                 }
                 else if(i > 1)
@@ -73,9 +85,10 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j + 1].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i + 1][j + 1].rgbtGreen)/6;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j + 1].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i + 1][j + 1].rgbtBlue)/6;
 
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+// Use of temporary value instead. This is the difference in iteration.
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
 
                 }
                 else // i = height
@@ -84,9 +97,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i][j + 1].rgbtGreen)/4;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i][j + 1].rgbtBlue)/4;
 
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
                 }
 
             }
@@ -98,9 +111,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i][j - 1].rgbtGreen)/4;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i][j - 1].rgbtBlue)/4;
 
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
 
                 }
                 else if(i > 1)
@@ -108,10 +121,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float RedAvg = (image[i][j].rgbtRed + image[i - 1][j].rgbtRed + image[i + 1][j].rgbtRed + image[i][j - 1].rgbtRed + image[i - 1][j - 1].rgbtRed + image[i + 1][j - 1].rgbtRed)/6;
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j - 1].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i + 1][j - 1].rgbtGreen)/6;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j - 1].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i + 1][j - 1].rgbtBlue)/6;
-
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
                 }
                 else // i = height
                 {
@@ -119,9 +131,9 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i][j - 1].rgbtGreen)/4;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i][j - 1].rgbtBlue)/4;
 
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
 
                 }
             }
@@ -131,13 +143,24 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                     float GreenAvg = (image[i][j].rgbtGreen + image[i - 1][j].rgbtGreen + image[i + 1][j].rgbtGreen + image[i][j - 1].rgbtGreen + image[i - 1][j - 1].rgbtGreen + image[i + 1][j - 1].rgbtGreen + image[i - 1][j + 1].rgbtGreen + image[i][j + 1].rgbtGreen + image[i + 1][j + 1].rgbtGreen)/9;
                     float BlueAvg = (image[i][j].rgbtBlue + image[i - 1][j].rgbtBlue + image[i + 1][j].rgbtBlue + image[i][j - 1].rgbtBlue + image[i - 1][j - 1].rgbtBlue + image[i + 1][j - 1].rgbtBlue + image[i - 1][j + 1].rgbtBlue + image[i][j + 1].rgbtBlue + image[i + 1][j + 1].rgbtBlue)/9;
 
-                    image[i][j].rgbtRed = round(RedAvg);
-                    image[i][j].rgbtGreen = round(GreenAvg);
-                    image[i][j].rgbtBlue = round(BlueAvg);
-
+                    temp[i][j].rgbtRed = (int)round(RedAvg);
+                    temp[i][j].rgbtGreen = (int)round(GreenAvg);
+                    temp[i][j].rgbtBlue = (int)round(BlueAvg);
             }
             // command: ./filter -b images/yard.bmp out.bmp
             // command: ./filter -b images/stadium.bmp out.bmp
+        }
+    }
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+
+            image[i][j].rgbtRed = temp[i][j].rgbtRed;
+
+            image[i][j].rgbtGreen = temp[i][j].rgbtGreen;
+
+            image[i][j].rgbtBlue = temp[i][j].rgbtBlue;
         }
     }
     return;
